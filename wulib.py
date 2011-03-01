@@ -2,6 +2,8 @@
 #
 
 from itertools import ifilterfalse
+import os
+import fnmatch
 
 def chunks(l, n):
     """ Yield successive n-sized chunks from l."""
@@ -27,3 +29,11 @@ def unique(iterable, key=None):
             if k not in seen:
                 seen_add(k)
                 yield element
+
+# Filesystem functions
+def rwalk(directory, pattern):
+    """Recursively search "directory" for files that match the Unix shell-style
+    wildcard given by "pattern" (like '*.mp3'). Returns matches as a generator."""
+    for root, dirnames, filenames in os.walk(directory):
+        for filename in fnmatch.filter(filenames, pattern):
+            yield os.path.join(root, filename)
