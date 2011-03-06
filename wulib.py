@@ -2,8 +2,11 @@
 #
 
 from itertools import ifilterfalse
+import sys
 import os
 import fnmatch
+import time
+from random import randint
 
 def chunks(l, n):
     """ Yield successive n-sized chunks from l."""
@@ -37,3 +40,40 @@ def rwalk(directory, pattern):
     for root, dirnames, filenames in os.walk(directory):
         for filename in fnmatch.filter(filenames, pattern):
             yield os.path.join(root, filename)
+
+# Helper functions
+def retry(function, args, exceptions, kwargs={}, times=-1, sleep=5, default=None):
+    """Repeatedly call a function until it succeeds.
+
+    Required arguments:
+    function -- function to call
+    args -- arguments in a list for function
+    exceptions -- tuple of exceptions to catch
+
+    Keyword arguments:
+    kwargs -- keyword arguments for function
+    times -- number of times to repeat call (-1 means repeat indefinitely)
+    sleep -- max time to sleep between repeated calls
+    default -- value to return if function never succeeds
+
+    Example:
+    > def foo(x, y, bar=None):
+    ...   if bar is not None: print(bar)
+    ...   return x/y
+    > baz = wulib.retry(foo, [4, 0], (ZeroDivisionError,), kwargs={'bar': 'calling foo'}, times=2, default='error')
+    calling foo
+    Calling foo failed, retrying...
+    calling foo
+    Calling foo failed, retrying...
+    > baz
+    'error'
+    """
+    while times != 0:
+        try:
+            times -= 1
+            return function(*args, **kwargs)
+        except exceptions:
+            sys.stderr.write('Calling %s failed, retrying...\n' % function.__name__)
+            time.sleep(randint(0, sleep))
+
+    return default
