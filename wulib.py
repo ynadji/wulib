@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 
-from itertools import ifilterfalse
+from itertools import ifilterfalse, chain
 import sys
 import os
 import fnmatch
@@ -32,6 +32,9 @@ def unique(iterable, key=None):
             if k not in seen:
                 seen_add(k)
                 yield element
+
+def flatten(listoflists):
+    return chain.from_iterable(listoflists)
 
 # Filesystem functions
 def rwalk(directory, pattern):
