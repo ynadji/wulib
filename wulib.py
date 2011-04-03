@@ -8,6 +8,9 @@ import fnmatch
 import time
 from random import randint
 
+sys.path.append('pylib')
+from rtimer import RepeatTimer
+
 def chunks(l, n):
     """ Yield successive n-sized chunks from l."""
     for i in range(0, len(l), n):
@@ -82,3 +85,25 @@ def retry(function, args, exceptions, kwargs={}, times=-1, sleep=5, default=None
             fixfun()
 
     return default
+
+def inittorsocket(): import torsocket
+
+def withtor(function, args=[], timer=60, exceptions=None):
+    """Call function using args with Tor and renew the connection to Tor
+    (change the exit node) every timer seconds. Alternatively, change the exit
+    node when exceptions (tuple) is thrown."""
+    def restarttor():
+        os.system('killall -HUP tor')
+        time.sleep(10)
+
+    if exceptions is None:
+        r = RepeatTimer(timer, restarttor)
+        r.start()
+        try:
+            function(*args)
+        except KeyboardInterrupt:
+            sys.stderr.write('User termination of %s\n' % function.__name__)
+        finally:
+            r.cancel()
+    else:
+        return retry(function, args, exceptions, fixfun=restarttor)
