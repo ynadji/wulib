@@ -7,6 +7,7 @@ import os
 import fnmatch
 import time
 from random import randint
+from collections import defaultdict
 
 sys.path.append('pylib')
 from rtimer import RepeatTimer
@@ -107,3 +108,10 @@ def withtor(function, args=[], timer=60, exceptions=None):
             r.cancel()
     else:
         return retry(function, args, exceptions, fixfun=restarttor)
+
+def frequency(iterable):
+    d = defaultdict(int)
+    for item in iterable:
+        d[item] += 1
+
+    return (d.keys(), d.values())
