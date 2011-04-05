@@ -118,4 +118,8 @@ def frequency(iterable):
     for item in iterable:
         d[item] += 1
 
-    return (d.keys(), d.values())
+    keys = sorted(d.keys())
+    values = []
+    for key in keys:
+        values.append(d[key])
+    return (keys, values)
