@@ -8,7 +8,11 @@ import fnmatch
 import time
 from random import randint
 
-sys.path.append('pylib')
+# OS functions
+def scriptdir(libdir, filedir=__file__):
+    return os.path.join(os.path.dirname(os.path.realpath(filedir)), libdir)
+
+sys.path.append(scriptdir('pylib'))
 from rtimer import RepeatTimer
 
 def chunks(l, n):
