@@ -123,3 +123,13 @@ def frequency(iterable):
     for key in keys:
         values.append(d[key])
     return (keys, values)
+
+def meanwithconfidence(data, confidence=0.95):
+    """Returns the mean of data with the confidence interval."""
+    import scipy.stats
+    from numpy import mean, array, sqrt
+    a = 1.0 * array(data)
+    n = len(a)
+    m, se = mean(a), scipy.stats.stderr(a)
+    h = se * scipy.stats.t._ppf((1 + confidence) / 2., n - 1)
+    return m, h
