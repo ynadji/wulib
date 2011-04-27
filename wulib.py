@@ -13,9 +13,6 @@ from collections import defaultdict
 def scriptdir(libdir, filedir=__file__):
     return os.path.join(os.path.dirname(os.path.realpath(filedir)), libdir)
 
-sys.path.append(scriptdir('pylib'))
-from rtimer import RepeatTimer
-
 def chunks(l, n):
     """ Yield successive n-sized chunks from l."""
     for i in range(0, len(l), n):
@@ -97,6 +94,9 @@ def withtor(function, args=[], timer=60, exceptions=None):
     """Call function using args with Tor and renew the connection to Tor
     (change the exit node) every timer seconds. Alternatively, change the exit
     node when exceptions (tuple) is thrown."""
+    sys.path.append(scriptdir('pylib'))
+    from rtimer import RepeatTimer
+
     def restarttor():
         os.system('killall -HUP tor')
         time.sleep(10)
@@ -112,6 +112,13 @@ def withtor(function, args=[], timer=60, exceptions=None):
             r.cancel()
     else:
         return retry(function, args, exceptions, fixfun=restarttor)
+
+def ipythonshell(local_ns={}, args=[], banner='Running in iPython subshell', exit_msg='Exiting subshell...'):
+    from IPython.Shell import IPShellEmbed
+    ipshell = IPShellEmbed(args, banner=banner, exit_msg=exit_msg)
+    ipshell('*** C-d to exit interpreter and continue program.\n', local_ns=local_ns)
+
+# Statistics
 
 def frequency(iterable):
     d = defaultdict(int)
