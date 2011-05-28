@@ -145,3 +145,41 @@ def meanwithconfidence(data, confidence=0.95):
 def fuckunicode(s):
     def isascii(c): return ord(c) < 128
     return filter(isascii, s)
+
+# Configs
+class ConfClass(object):
+    """Taken from scapy.config. Subclass ConfClass to create the config for your
+    project. Example:
+
+    >>> class Test(ConfClass):
+        version = "1.2"
+        type = 3
+        foo = "asdf"
+        bar = [1, 2, 3]
+
+    >>> conf = Test()
+    >>> conf
+    bar        = [1, 2, 3]
+    foo        = 'asdf'
+    random     = 'cool'
+    type       = 3
+    version    = '3.4'"""
+    def configure(self, cnf):
+        self.__dict__ = cnf.__dict__.copy()
+    def __repr__(self):
+        return str(self)
+    def __str__(self):
+        s=""
+        keys = self.__class__.__dict__.copy()
+        keys.update(self.__dict__)
+        keys = keys.keys()
+        keys.sort()
+        for i in keys:
+            if i[0] != "_":
+                r = repr(getattr(self, i))
+                r = " ".join(r.split())
+                wlen = 76-max(len(i),10)
+                if len(r) > wlen:
+                    r = r[:wlen-3]+"..."
+                s += "%-10s = %s\n" % (i, r)
+        return s[:-1]
