@@ -140,3 +140,8 @@ def meanwithconfidence(data, confidence=0.95):
     m, se = mean(a), scipy.stats.stderr(a)
     h = se * scipy.stats.t._ppf((1 + confidence) / 2., n - 1)
     return m, h
+
+# Text munging
+def fuckunicode(s):
+    def isascii(c): return ord(c) < 128
+    return filter(isascii, s)
