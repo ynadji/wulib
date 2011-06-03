@@ -121,15 +121,12 @@ def ipythonshell(local_ns={}, args=[], banner='Running in iPython subshell', exi
 # Statistics
 
 def frequency(iterable):
+    from operator import itemgetter
     d = defaultdict(int)
     for item in iterable:
         d[item] += 1
 
-    keys = sorted(d.keys())
-    values = []
-    for key in keys:
-        values.append(d[key])
-    return (keys, values)
+    return sorted(d.iteritems(), key=itemgetter(1), reverse=True)
 
 def meanwithconfidence(data, confidence=0.95):
     """Returns the mean of data with the confidence interval."""
