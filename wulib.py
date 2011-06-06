@@ -113,10 +113,10 @@ def withtor(function, args=[], timer=60, exceptions=None):
     else:
         return retry(function, args, exceptions, fixfun=restarttor)
 
-def ipythonshell(local_ns={}, args=[], banner='Running in iPython subshell', exit_msg='Exiting subshell...'):
+def ipythonshell(global_ns={}, local_ns={}, args=[], banner='Running in iPython subshell', exit_msg='Exiting subshell...'):
     from IPython.Shell import IPShellEmbed
     ipshell = IPShellEmbed(args, banner=banner, exit_msg=exit_msg)
-    ipshell('*** C-d to exit interpreter and continue program.\n', local_ns=local_ns)
+    ipshell('*** C-d to exit interpreter and continue program.\n', global_ns=global_ns, local_ns=local_ns)
 
 # Statistics
 
