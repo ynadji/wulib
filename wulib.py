@@ -50,7 +50,7 @@ def rwalk(directory, pattern):
             yield os.path.join(root, filename)
 
 # Helper functions
-def retry(function, args, exceptions, kwargs={}, times=-1, sleep=5, default=None, fixfun=lambda : None):
+def retry(function, args, exceptions, kwargs={}, times=-1, sleep=5, default=None, fixfun=lambda : None, moreinfo=''):
     """Repeatedly call a function until it succeeds.
 
     Required arguments:
@@ -83,6 +83,8 @@ def retry(function, args, exceptions, kwargs={}, times=-1, sleep=5, default=None
             return function(*args, **kwargs)
         except exceptions:
             sys.stderr.write('Calling %s failed, retrying...\n' % function.__name__)
+            if moreinfo != '':
+                sys.stderr.write('\t%s\n' % moreinfo)
             time.sleep(randint(0, sleep))
             fixfun()
 
