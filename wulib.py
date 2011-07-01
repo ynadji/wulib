@@ -182,3 +182,36 @@ class ConfClass(object):
                     r = r[:wlen-3]+"..."
                 s += "%-10s = %s\n" % (i, r)
         return s[:-1]
+
+# DNS-related
+class DomainList(object):
+    """Tree-based domain name whitelist/blacklist/graylist. A tree structure
+    is created mirroring the DNS hierarchy based on the list of domain names
+    in the provided list. This tree structure is traversed to determine if a
+    domain name exists in the list or not."""
+    def __init__(self, whitelistfile):
+        self.tree = {}
+        with open(whitelistfile) as f:
+            for line in f:
+                lds = line.strip().split('.')
+                lds.reverse()
+                # Add to tree data structure
+                node = self.tree
+                for ld in lds:
+                    if ld not in node:
+                        node[ld] = {}
+                    node = node[ld]
+
+    def __contains__(self, domain):
+        lds = domain.split('.')
+        lds.reverse()
+        node = self.tree
+        for ld in lds:
+            try: node = node[ld]
+            # This will (almost) always happen unless the domain is an exact
+            # match for one in the domain list (e.g., 'google.com').
+            except KeyError: pass
+
+        # If node == {}, the previous key was seen and is a leaf node.
+        # Therefore, it's in the domain list.
+        return node == {}
