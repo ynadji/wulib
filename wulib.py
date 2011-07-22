@@ -41,6 +41,13 @@ def unique(iterable, key=None):
 def flatten(listoflists):
     return chain.from_iterable(listoflists)
 
+def anyp(pred, iterable):
+    """Python's any() is terrible."""
+    for it in iterable:
+        if pred(it):
+            return it
+    return False
+
 # Filesystem functions
 def rwalk(directory, pattern):
     """Recursively search "directory" for files that match the Unix shell-style
