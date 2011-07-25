@@ -226,17 +226,24 @@ class DomainList(object):
 class IPList(object):
     """IP/CIDR whitelist/blacklist/greylist. A sorted list of networks is
     created from the provided networks and a binary search is performed to see
-    if the provided IP exists in the list of networks. For all networks in the
-    list, none must be a subset of any other networks in the list. See the
-    comment in __init__() for a further explanation."""
+    if the provided IP exists in the list of networks. If a list of IPs is given
+    one can optionally provide a network size to expand the IPs to. For all
+    networks in the list, none must be a subset of any other networks in the
+    list. See the comment in __init__() for a further explanation."""
 
     from IPy import IP
 
-    def __init__(self, iplistfile):
+    def __init__(self, iplistfile, netsize=None):
         self.networks = []
         with open(iplistfile) as f:
             for line in f:
-                self.networks.append(self.IP(line.strip()))
+                if netsize is None:
+                    self.networks.append(self.IP(line.strip()))
+                else:
+                    ip = line.strip()
+                    # Make a network for the given IP at the provided netsize
+                    net = self.IP(ip).make_net(self.IP((2 << netsize - 1) - 1))
+                    self.networks.append(net)
 
         self.networks = sorted(self.networks, key=lambda x: x.int())
         for i, net1 in enumerate(self.networks):
