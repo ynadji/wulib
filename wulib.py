@@ -13,9 +13,11 @@ from collections import defaultdict
 def scriptdir(libdir, filedir=__file__):
     return os.path.join(os.path.dirname(os.path.realpath(filedir)), libdir)
 
-def chunks(l, n):
-    """ Yield successive n-sized chunks from l."""
-    for i in range(0, len(l), n):
+def chunks(l, n, slide=None):
+    """Yield successive n-sized chunks from l with a sliding window of slide
+    indexes. Default value of slide has non-overlapping chunks."""
+    if slide is None: slide = n
+    for i in range(0, len(l), slide):
         yield l[i:i+n]
 
 # Helpful "itertools" functions
