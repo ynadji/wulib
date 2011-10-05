@@ -1,17 +1,31 @@
 #!/usr/bin/env python
 #
 
-from itertools import ifilterfalse, chain
+from itertools import ifilterfalse, chain, islice
 import sys
 import os
 import fnmatch
 import time
 from random import randint
-from collections import defaultdict
+from collections import defaultdict, deque
 
 # OS functions
 def scriptdir(libdir, filedir=__file__):
     return os.path.join(os.path.dirname(os.path.realpath(filedir)), libdir)
+
+def take(n, iterable):
+    "Return first n items of the iterable as a list"
+    return list(islice(iterable, n))
+
+def ichunks(l, n):
+    """Same as chunks, but works with itertables (no indexes). Doesn't support
+    window keyword argument. You should figure out how so you can just have
+    one function."""
+    l = iter(l)
+    chunk = take(n, l)
+    while chunk != []:
+        yield chunk
+        chunk = take(n, l)
 
 def chunks(l, n, slide=None):
     """Yield successive n-sized chunks from l with a sliding window of slide
