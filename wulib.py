@@ -229,11 +229,13 @@ class DomainList(object):
         lds = domain.split('.')
         lds.reverse()
         node = self.tree
-        for ld in lds:
-            try: node = node[ld]
-            # This will (almost) always happen unless the domain is an exact
-            # match for one in the domain list (e.g., 'google.com').
-            except KeyError: pass
+        try:
+            for ld in lds:
+                node = node[ld]
+        # This will (almost) always happen unless the domain is an exact
+        # match for one in the domain list (e.g., 'google.com').
+        except KeyError:
+            pass
 
         # If node == {}, the previous key was seen and is a leaf node.
         # Therefore, it's in the domain list.
