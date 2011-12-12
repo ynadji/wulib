@@ -225,6 +225,10 @@ class DomainList(object):
                         node[ld] = {}
                     node = node[ld]
 
+                # Sentinel to prove this node can be considered a leaf. This
+                # allows subdomains to be included in the whitelist file.
+                node[1] = True
+
     def __contains__(self, domain):
         lds = domain.split('.')
         lds.reverse()
@@ -237,9 +241,8 @@ class DomainList(object):
         except KeyError:
             pass
 
-        # If node == {}, the previous key was seen and is a leaf node.
-        # Therefore, it's in the domain list.
-        return node == {}
+        # If 1 in node is True, we've found a leaf node.
+        return 1 in node
 
 class IPList(object):
     """IP/CIDR whitelist/blacklist/greylist. A sorted list of networks is
