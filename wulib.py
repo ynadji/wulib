@@ -159,7 +159,7 @@ def meanwithconfidence(data, confidence=0.95):
     from numpy import mean, array, sqrt
     a = 1.0 * array(data)
     n = len(a)
-    m, se = mean(a), scipy.stats.stderr(a)
+    m, se = mean(a), scipy.stats.sem(a)
     h = se * scipy.stats.t._ppf((1 + confidence) / 2., n - 1)
     return m, h
 
