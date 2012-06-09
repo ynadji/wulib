@@ -304,3 +304,8 @@ class IPList(object):
 
     def __contains__(self, ip):
         return self._find(self.networks, ip)
+
+# Functional tools I miss
+def compose(*funcs, **kfuncs):
+    """Compose a group of functions (f(g(h(..)))) into (fogoh...)(...)"""
+    return reduce(lambda f, g: lambda *args, **kaargs: f(g(*args, **kaargs)), funcs)
