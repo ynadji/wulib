@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 #
 
-from itertools import ifilterfalse, chain, islice
+from itertools import filterfalse, chain, islice
 import sys
 import os
 import fnmatch
 import time
 from random import randint
 from collections import defaultdict, deque
+from functools import reduce
 
 # OS functions
 def scriptdir(libdir, filedir=__file__):
@@ -44,7 +45,7 @@ def unique(iterable, key=None):
     seen = set()
     seen_add = seen.add
     if key is None:
-        for element in ifilterfalse(seen.__contains__, iterable):
+        for element in filterfalse(seen.__contains__, iterable):
             seen_add(element)
             yield element
     else:
@@ -151,7 +152,7 @@ def frequency(iterable):
     for item in iterable:
         d[item] += 1
 
-    return sorted(d.iteritems(), key=itemgetter(1), reverse=True)
+    return sorted(iter(d.items()), key=itemgetter(1), reverse=True)
 
 def meanwithconfidence(data, confidence=0.95):
     """Returns the mean of data with the confidence interval."""
@@ -166,7 +167,7 @@ def meanwithconfidence(data, confidence=0.95):
 # Text munging
 def fuckunicode(s):
     def isascii(c): return ord(c) < 128
-    return filter(isascii, s)
+    return list(filter(isascii, s))
 
 # Configs
 class ConfClass(object):
@@ -194,7 +195,7 @@ class ConfClass(object):
         s=""
         keys = self.__class__.__dict__.copy()
         keys.update(self.__dict__)
-        keys = keys.keys()
+        keys = list(keys.keys())
         keys.sort()
         for i in keys:
             if i[0] != "_":
